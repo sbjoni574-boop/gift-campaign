@@ -26,7 +26,6 @@ form1.addEventListener("submit", async function (event) {
   }
 
   try {
-
     const response = await fetch("/api/register", {
       method: "POST",
       headers: {
@@ -42,28 +41,22 @@ form1.addEventListener("submit", async function (event) {
 
     const result = await response.json();
 
-    if (!response.ok) {
+    if (!response.ok || !result.success) {
       alert(result.message || "Registration failed.");
       return;
     }
 
-    // Entry ID ko temporarily remember karenge
     currentEntryId = result.entryId;
 
-    // Form 1 hide
     form1.classList.add("hidden");
-
-    // Form 2 show
     form2.classList.remove("hidden");
 
   } catch (error) {
-
-    console.error(error);
+    console.error("Form 1 error:", error);
 
     alert(
-      "Server se connection nahi ho raha. Please check that the server is running."
+      "Server se connection nahi ho raha. Please try again."
     );
-
   }
 });
 
@@ -73,11 +66,8 @@ form1.addEventListener("submit", async function (event) {
 // ============================
 
 backBtn.addEventListener("click", function () {
-
   form2.classList.add("hidden");
-
   form1.classList.remove("hidden");
-
 });
 
 
@@ -86,7 +76,6 @@ backBtn.addEventListener("click", function () {
 // ============================
 
 form2.addEventListener("submit", async function (event) {
-
   event.preventDefault();
 
   const secretCode =
@@ -104,45 +93,36 @@ form2.addEventListener("submit", async function (event) {
 
   try {
 
-    const response = await fetch("/api/secret-code", {
-
+    // IMPORTANT:
+    // server.js endpoint is /api/secret
+    const response = await fetch("/api/secret", {
       method: "POST",
-
       headers: {
         "Content-Type": "application/json"
       },
-
       body: JSON.stringify({
         entryId: currentEntryId,
-        secretCode
+        secretCode: secretCode
       })
-
     });
 
     const result = await response.json();
 
-    if (!response.ok) {
+    if (!response.ok || !result.success) {
       alert(result.message || "Submission failed.");
       return;
     }
 
-    // Entry ID show
     entryIdElement.textContent = currentEntryId;
 
-    // Form 2 hide
     form2.classList.add("hidden");
-
-    // Success page show
     success.classList.remove("hidden");
 
   } catch (error) {
-
-    console.error(error);
+    console.error("Form 2 error:", error);
 
     alert(
-      "Server se connection nahi ho raha. Please check that the server is running."
+      "Server se connection nahi ho raha. Please try again."
     );
-
   }
-
 });
