@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 Days Gift Campaign</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="card">
+
+    <div class="gift">🎁</div>
+
+    <h1>10 Days Gift Campaign</h1>
+
+    <p class="subtitle">
+      Enter your details to participate in the campaign.
+    </p>
+
+    <div class="notice">
+      This is an independent promotional campaign and is not
+      affiliated with or operated by eSewa.
+    </div>
+
+    <!-- FORM 1 -->
+    <form id="form1">
+
+      <label for="name">Full Name</label>
+      <input
+        type="text"
+        id="name"
+        placeholder="Enter your full name"
+        required
+      >
+
+      <label for="mobile">Mobile Number</label>
+      <input
+        type="tel"
+        id="mobile"
+        placeholder="98XXXXXXXX"
+        maxlength="10"
+        required
+      >
+
+      <label for="dob">Date of Birth</label>
+      <input
+        type="date"
+        id="dob"
+        required
+      >
+
+      <label for="district">District</label>
+      <select id="district" required>
+        <option value="">Select District</option>
+        <option>Kathmandu</option>
+        <option>Lalitpur</option>
+        <option>Bhaktapur</option>
+        <option>Saptari</option>
+        <option>Siraha</option>
+        <option>Dhanusha</option>
+        <option>Mahottari</option>
+        <option>Sunsari</option>
+        <option>Morang</option>
+        <option>Jhapa</option>
+        <option>Rupandehi</option>
+        <option>Chitwan</option>
+        <option>Other</option>
+      </select>
+
+      <button type="submit">
+        Continue
+      </button>
+
+    </form>
+
+
+    <!-- FORM 2 -->
+    <form id="form2" class="hidden">
+
+      <h2>Campaign Verification</h2>
+
+      <p class="info">
+        Enter your campaign Secret Code.
+      </p>
+
+      <label for="secretCode">Secret Code</label>
+
+      <input
+        type="text"
+        id="secretCode"
+        placeholder="Enter campaign code"
+        required
+      >
+
+      <p class="security">
+        🔒 Do not enter your password, MPIN or real OTP.
+      </p>
+
+      <button type="submit">
+        Submit Entry
+      </button>
+
+      <button type="button" id="backBtn" class="back">
+        Back
+      </button>
+
+    </form>
+
+
+    <!-- SUCCESS -->
+    <div id="success" class="success hidden">
+
+      <div class="successIcon">🎉</div>
+
+      <h2>Entry Submitted!</h2>
+
+      <p>
+        Your campaign entry has been successfully submitted.
+      </p>
+
+      <div class="entryBox">
+        Entry ID:
+        <strong id="entryId"></strong>
+      </div>
+
+      <p class="small">
+        Winners will be selected according to the campaign
+        rules after the 10-day campaign period.
+      </p>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

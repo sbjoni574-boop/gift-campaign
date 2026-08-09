@@ -1,0 +1,159 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #f2f4f7;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+}
+
+.gift {
+  text-align: center;
+  font-size: 58px;
+  margin-bottom: 10px;
+}
+
+h1,
+h2 {
+  text-align: center;
+  color: #222;
+}
+
+h1 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+h2 {
+  margin-bottom: 12px;
+}
+
+.subtitle,
+.info {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.notice {
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background: #f1f5ff;
+  color: #344054;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin: 14px 0 7px;
+  font-weight: bold;
+  color: #333;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ccc;
+  border-radius: 9px;
+  font-size: 15px;
+  outline: none;
+  background: white;
+}
+
+input:focus,
+select:focus {
+  border-color: #555;
+}
+
+button {
+  width: 100%;
+  margin-top: 22px;
+  padding: 14px;
+  border: none;
+  border-radius: 9px;
+  background: #222;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+.back {
+  margin-top: 10px;
+  background: #e5e7eb;
+  color: #222;
+}
+
+.security {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #fff3cd;
+  color: #664d03;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.hidden {
+  display: none;
+}
+
+.success {
+  text-align: center;
+}
+
+.successIcon {
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.success p {
+  color: #555;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+.entryBox {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #f2f4f7;
+  font-size: 14px;
+}
+
+.entryBox strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 20px;
+}
+
+.small {
+  font-size: 12px;
+}
