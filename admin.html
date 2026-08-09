@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gift Campaign Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #222;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .login-box,
+    .admin-box {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .login-box {
+      max-width: 420px;
+      margin: 70px auto;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      background: #111;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: #f8f9fa;
+      padding: 18px;
+      border-radius: 10px;
+      min-width: 150px;
+    }
+
+    .card strong {
+      display: block;
+      font-size: 25px;
+      margin-top: 5px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 850px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f1f3f5;
+    }
+
+    .error {
+      color: #d00;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .logout {
+      background: #d00;
+    }
+
+    .refresh {
+      background: #198754;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+  <div id="loginSection" class="container">
+
+    <div class="login-box">
+
+      <h1>🎁 Admin Panel</h1>
+
+      <p>10 Days Gift Campaign</p>
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Admin Password"
+      >
+
+      <button onclick="login()">
+        Login
+      </button>
+
+      <div id="loginError" class="error"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ADMIN -->
+  <div id="adminSection" class="container hidden">
+
+    <div class="admin-box">
+
+      <div class="top">
+
+        <div>
+          <h1>🎁 Campaign Entries</h1>
+          <p>Registered participants</p>
+        </div>
+
+        <div>
+          <button class="refresh" onclick="loadData()">
+            🔄 Refresh
+          </button>
+
+          <button class="logout" onclick="logout()">
+            Logout
+          </button>
+        </div>
+
+      </div>
+
+
+      <!-- STATS -->
+
+      <div class="stats">
+
+        <div class="card">
+          Total Entries
+          <strong id="totalEntries">0</strong>
+        </div>
+
+        <div class="card">
+          Secret Submitted
+          <strong id="secretEntries">0</strong>
+        </div>
+
+      </div>
+
+
+      <!-- SEARCH -->
+
+      <input
+        type="text"
+        id="search"
+        placeholder="🔎 Search name, mobile or district..."
+        oninput="filterTable()"
+      >
+
+
+      <!-- TABLE -->
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Mobile</th>
+              <th>DOB</th>
+              <th>District</th>
+              <th>Secret Status</th>
+              <th>Created</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="tableBody">
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+<script>
+
+let adminPassword = "";
+let allParticipants = [];
+
+
+// ------------------------------------
+// LOGIN
+// ------------------------------------
+
+async function login() {
+
+  const password =
+    document.getElementById("password").value.trim();
+
+  const error =
+    document.getElementById("loginError");
+
+  error.textContent = "";
+
+  if (!password) {
+
+    error.textContent =
+      "Please enter password.";
+
+    return;
+  }
+
+  try {
+
+    const response =
+      await fetch("/api/admin/login", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          password: password
+        })
+
+      });
+
+    const data =
+      await response.json();
+
+    if (!data.success) {
+
+      error.textContent =
+        data.message || "Wrong password.";
+
+      return;
+    }
+
+    adminPassword = password;
+
+    document
+      .getElementById("loginSection")
+      .classList.add("hidden");
+
+    document
+      .getElementById("adminSection")
+      .classList.remove("hidden");
+
+    loadData();
+
+  } catch (error) {
+
+    document.getElementById("loginError").textContent =
+      "Server connection error.";
+
+  }
+
+}
+
+
+// ------------------------------------
+// LOAD DATA
+// ------------------------------------
+
+async function loadData() {
+
+  try {
+
+    const response =
+      await fetch("/api/admin/data", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          password: adminPassword
+        })
+
+      });
+
+    const data =
+      await response.json();
+
+    if (!data.success) {
+
+      alert(data.message || "Could not load data.");
+
+      return;
+    }
+
+    allParticipants =
+      data.participants || [];
+
+    document.getElementById("totalEntries")
+      .textContent = allParticipants.length;
+
+    const secretCount =
+      allParticipants.filter(
+        p => p.secret_code !== null
+      ).length;
+
+    document.getElementById("secretEntries")
+      .textContent = secretCount;
+
+    displayTable(allParticipants);
+
+  } catch (error) {
+
+    alert("Could not connect to server.");
+
+  }
+
+}
+
+
+// ------------------------------------
+// DISPLAY TABLE
+// ------------------------------------
+
+function displayTable(participants) {
+
+  const body =
+    document.getElementById("tableBody");
+
+  body.innerHTML = "";
+
+  if (participants.length === 0) {
+
+    body.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align:center;">
+          No entries found.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+
+  participants.forEach(p => {
+
+    const row =
+      document.createElement("tr");
+
+    const created =
+      p.created_at
+        ? new Date(p.created_at).toLocaleString()
+        : "-";
+
+    const secretStatus =
+      p.secret_code
+        ? "✅ Submitted"
+        : "❌ Not submitted";
+
+
+    row.innerHTML = `
+
+      <td>${escapeHTML(p.id)}</td>
+
+      <td>${escapeHTML(p.name)}</td>
+
+      <td>${escapeHTML(p.mobile)}</td>
+
+      <td>${escapeHTML(p.dob)}</td>
+
+      <td>${escapeHTML(p.district)}</td>
+
+      <td>${secretStatus}</td>
+
+      <td>${escapeHTML(created)}</td>
+
+    `;
+
+    body.appendChild(row);
+
+  });
+
+}
+
+
+// ------------------------------------
+// SEARCH
+// ------------------------------------
+
+function filterTable() {
+
+  const search =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase()
+      .trim();
+
+  if (!search) {
+
+    displayTable(allParticipants);
+
+    return;
+  }
+
+  const filtered =
+    allParticipants.filter(p => {
+
+      return (
+
+        String(p.id)
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        String(p.name)
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        String(p.mobile)
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        String(p.district)
+          .toLowerCase()
+          .includes(search)
+
+      );
+
+    });
+
+  displayTable(filtered);
+
+}
+
+
+// ------------------------------------
+// LOGOUT
+// ------------------------------------
+
+function logout() {
+
+  adminPassword = "";
+
+  document
+    .getElementById("adminSection")
+    .classList.add("hidden");
+
+  document
+    .getElementById("loginSection")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("password")
+    .value = "";
+
+}
+
+
+// ------------------------------------
+// SECURITY
+// ------------------------------------
+
+function escapeHTML(value) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    value ?? "";
+
+  return div.innerHTML;
+
+}
+
+</script>
+
+</body>
+</html>
