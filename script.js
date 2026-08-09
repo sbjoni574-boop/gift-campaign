@@ -1,158 +1,201 @@
-const form1 = document.getElementById("form1");
-const form2 = document.getElementById("form2");
-const success = document.getElementById("success");
+const form1 =
+  document.getElementById("form1");
 
-const backBtn = document.getElementById("backBtn");
-const entryIdElement = document.getElementById("entryId");
+const form2 =
+  document.getElementById("form2");
+
+const success =
+  document.getElementById("success");
+
+const backBtn =
+  document.getElementById("backBtn");
+
+const entryIdElement =
+  document.getElementById("entryId");
+
 
 let currentEntryId = null;
 
 
-// ============================
+// ====================================
 // FORM 1 → CONTINUE
-// ============================
+// ====================================
 
-form1.addEventListener("submit", async function (event) {
+form1.addEventListener(
+  "submit",
+  async function(event) {
 
-  event.preventDefault();
-
-  const name =
-    document.getElementById("name").value.trim();
-
-  const email =
-    document.getElementById("email").value.trim();
-
-  const mobile =
-    document.getElementById("mobile").value.trim();
-
-  const dob =
-    document.getElementById("dob").value;
-
-  const district =
-    document.getElementById("district").value;
+    event.preventDefault();
 
 
-  if (
-    !name ||
-    !email ||
-    !mobile ||
-    !dob ||
-    !district
-  ) {
-
-    alert("Please fill all fields.");
-    return;
-
-  }
+    const name =
+      document
+        .getElementById("name")
+        .value
+        .trim();
 
 
-  // Basic email validation
-  const emailPattern =
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!emailPattern.test(email)) {
-
-    alert("Please enter a valid email address.");
-    return;
-
-  }
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim();
 
 
-  try {
-
-    const response =
-      await fetch("/api/register", {
-
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-
-          name: name,
-
-          email: email,
-
-          mobile: mobile,
-
-          dob: dob,
-
-          district: district
-
-        })
-
-      });
+    const mobile =
+      document
+        .getElementById("mobile")
+        .value
+        .trim();
 
 
-    const result =
-      await response.json();
+    const dob =
+      document
+        .getElementById("dob")
+        .value;
 
+
+    const district =
+      document
+        .getElementById("district")
+        .value;
+
+
+    // -----------------------------
+    // Validation
+    // -----------------------------
 
     if (
-      !response.ok ||
-      !result.success
+      !name ||
+      !email ||
+      !mobile ||
+      !dob ||
+      !district
     ) {
 
       alert(
-        result.message ||
-        "Registration failed."
+        "Please fill all fields."
       );
 
       return;
-
     }
 
 
-    currentEntryId =
-      result.entryId;
+    if (!/^[0-9]{10}$/.test(mobile)) {
+
+      alert(
+        "Please enter a valid 10 digit mobile number."
+      );
+
+      return;
+    }
 
 
-    form1.classList.add("hidden");
+    try {
 
-    form2.classList.remove("hidden");
+      const response =
+        await fetch(
+          "/api/register",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+
+              name,
+              email,
+              mobile,
+              dob,
+              district
+
+            })
+
+          }
+        );
 
 
-  } catch (error) {
-
-    console.error(
-      "Form 1 error:",
-      error
-    );
-
-    alert(
-      "Server se connection nahi ho raha. Please try again."
-    );
-
-  }
-
-});
+      const result =
+        await response.json();
 
 
-// ============================
-// BACK BUTTON
-// ============================
+      if (
+        !response.ok ||
+        !result.success
+      ) {
 
-backBtn.addEventListener(
-  "click",
-  function () {
+        alert(
+          result.message ||
+          "Registration failed."
+        );
 
-    form2.classList.add("hidden");
+        return;
+      }
 
-    form1.classList.remove("hidden");
+
+      currentEntryId =
+        result.entryId;
+
+
+      form1
+        .classList
+        .add("hidden");
+
+
+      form2
+        .classList
+        .remove("hidden");
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Registration error:",
+        error
+      );
+
+      alert(
+        "Server se connection nahi ho raha."
+      );
+
+    }
 
   }
 );
 
 
-// ============================
-// FORM 2 → SUBMIT
-// ============================
+// ====================================
+// BACK
+// ====================================
+
+backBtn.addEventListener(
+  "click",
+  function() {
+
+    form2
+      .classList
+      .add("hidden");
+
+
+    form1
+      .classList
+      .remove("hidden");
+
+  }
+);
+
+
+// ====================================
+// FORM 2 → COUPON SUBMIT
+// ====================================
 
 form2.addEventListener(
   "submit",
-  async function (event) {
+  async function(event) {
 
     event.preventDefault();
 
@@ -164,25 +207,16 @@ form2.addEventListener(
         .trim();
 
 
-    if (!secretCode) {
+    // 6–8 digit coupon only
+    if (
+      !/^[0-9]{6,8}$/.test(secretCode)
+    ) {
 
       alert(
-        "Please enter the campaign coupon code."
+        "Coupon code must contain 6 to 8 digits."
       );
 
       return;
-
-    }
-
-
-    if (!/^\d{4}$/.test(secretCode)) {
-
-      alert(
-        "Please enter a valid 4-digit campaign coupon code."
-      );
-
-      return;
-
     }
 
 
@@ -193,7 +227,6 @@ form2.addEventListener(
       );
 
       return;
-
     }
 
 
@@ -203,7 +236,6 @@ form2.addEventListener(
         await fetch(
           "/api/secret",
           {
-
             method: "POST",
 
             headers: {
@@ -240,27 +272,34 @@ form2.addEventListener(
         );
 
         return;
-
       }
 
 
-      entryIdElement.textContent =
-        currentEntryId;
+      entryIdElement
+        .textContent =
+          currentEntryId;
 
 
-      form2.classList.add("hidden");
+      form2
+        .classList
+        .add("hidden");
 
-      success.classList.remove("hidden");
 
-    } catch (error) {
+      success
+        .classList
+        .remove("hidden");
+
+    }
+
+    catch (error) {
 
       console.error(
-        "Form 2 error:",
+        "Coupon error:",
         error
       );
 
       alert(
-        "Server se connection nahi ho raha. Please try again."
+        "Server se connection nahi ho raha."
       );
 
     }
