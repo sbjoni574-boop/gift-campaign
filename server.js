@@ -10,29 +10,52 @@ const app = express();
 // ====================================
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
 
 
 // ====================================
 // STATIC WEBSITE
 // ====================================
 
-app.use(express.static(path.join(__dirname)));
+app.use(
+  express.static(
+    path.join(__dirname)
+  )
+);
 
 
 // ====================================
-// POSTGRESQL CONNECTION
+// POSTGRESQL
 // ====================================
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+if (!process.env.DATABASE_URL) {
 
-  ssl: process.env.DATABASE_URL
-    ? {
-        rejectUnauthorized: false
-      }
-    : false
-});
+  console.error(
+    "DATABASE_URL is missing."
+  );
+
+}
+
+
+const pool =
+  new Pool({
+
+    connectionString:
+      process.env.DATABASE_URL,
+
+    ssl:
+      process.env.DATABASE_URL
+        ? {
+            rejectUnauthorized: false
+          }
+        : false
+
+  });
 
 
 // ====================================
@@ -43,51 +66,86 @@ async function createTable() {
 
   try {
 
-    // Create table if it does not exist
     await pool.query(`
+
       CREATE TABLE IF NOT EXISTS participants (
+
         id SERIAL PRIMARY KEY,
+
         name VARCHAR(100) NOT NULL,
+
         email VARCHAR(255),
+
         mobile VARCHAR(30) NOT NULL,
+
         dob DATE NOT NULL,
+
         district VARCHAR(100) NOT NULL,
-        secret_code VARCHAR(100),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        secret_submitted_at TIMESTAMP
+
+        secret_code VARCHAR(8),
+
+        created_at
+          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+        secret_submitted_at
+          TIMESTAMP
+
       )
+
     `);
 
 
-    // Add missing columns for existing database
+    // Existing database के लिए
+    // missing columns add करें
+
     await pool.query(`
+
       ALTER TABLE participants
-      ADD COLUMN IF NOT EXISTS email VARCHAR(255)
+
+      ADD COLUMN IF NOT EXISTS
+      email VARCHAR(255)
+
     `);
 
 
     await pool.query(`
+
       ALTER TABLE participants
-      ADD COLUMN IF NOT EXISTS secret_code VARCHAR(100)
+
+      ADD COLUMN IF NOT EXISTS
+      secret_code VARCHAR(8)
+
     `);
 
 
     await pool.query(`
+
       ALTER TABLE participants
-      ADD COLUMN IF NOT EXISTS created_at
+
+      ADD COLUMN IF NOT EXISTS
+      created_at
       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
     `);
 
 
     await pool.query(`
+
       ALTER TABLE participants
-      ADD COLUMN IF NOT EXISTS secret_submitted_at TIMESTAMP
+
+      ADD COLUMN IF NOT EXISTS
+      secret_submitted_at TIMESTAMP
+
     `);
 
 
-    console.log("Database table ready ✅");
+    console.log(
+      "Database table ready ✅"
+    );
 
-  } catch (error) {
+  }
+
+  catch (error) {
 
     console.error(
       "Database table error:",
@@ -103,405 +161,601 @@ async function createTable() {
 // HOME
 // ====================================
 
-app.get("/", (req, res) => {
+app.get(
+  "/",
+  function(req, res) {
 
-  res.sendFile(
-    path.join(__dirname, "index.html")
-  );
-
-});
-
-
-// ====================================
-// FORM 1 - REGISTRATION
-// ====================================
-
-app.post("/api/register", async (req, res) => {
-
-  try {
-
-    const {
-      name,
-      email,
-      mobile,
-      dob,
-      district
-    } = req.body;
-
-
-    // Validation
-    if (
-      !name ||
-      !email ||
-      !mobile ||
-      !dob ||
-      !district
-    ) {
-
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required."
-      });
-
-    }
-
-
-    // Basic email validation
-    const emailPattern =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailPattern.test(email)) {
-
-      return res.status(400).json({
-        success: false,
-        message: "Please enter a valid email address."
-      });
-
-    }
-
-
-    // Save registration
-    const result = await pool.query(
-      `
-      INSERT INTO participants
-      (
-        name,
-        email,
-        mobile,
-        dob,
-        district
+    res.sendFile(
+      path.join(
+        __dirname,
+        "index.html"
       )
-      VALUES
-      ($1, $2, $3, $4, $5)
-      RETURNING id
-      `,
-      [
+    );
+
+  }
+);
+
+
+// ====================================
+// REGISTER
+// ====================================
+
+app.post(
+  "/api/register",
+  async function(req, res) {
+
+    try {
+
+      const {
         name,
         email,
         mobile,
         dob,
         district
-      ]
-    );
+      } = req.body;
 
 
-    const entryId =
-      result.rows[0].id;
+      if (
+        !name ||
+        !email ||
+        !mobile ||
+        !dob ||
+        !district
+      ) {
+
+        return res
+          .status(400)
+          .json({
+
+            success: false,
+
+            message:
+              "All fields are required."
+
+          });
+
+      }
 
 
-    console.log(
-      "Registration saved. Entry ID:",
-      entryId
-    );
+      // Basic email validation
+
+      if (
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+          .test(email)
+      ) {
+
+        return res
+          .status(400)
+          .json({
+
+            success: false,
+
+            message:
+              "Please enter a valid email."
+
+          });
+
+      }
 
 
-    res.json({
-      success: true,
-      entryId: entryId
-    });
+      // Mobile validation
+
+      if (
+        !/^[0-9]{10}$/
+          .test(mobile)
+      ) {
+
+        return res
+          .status(400)
+          .json({
+
+            success: false,
+
+            message:
+              "Mobile number must be 10 digits."
+
+          });
+
+      }
 
 
-  } catch (error) {
+      const result =
+        await pool.query(
 
-    console.error(
-      "Registration save error:",
-      error
-    );
+          `
 
+          INSERT INTO participants
 
-    res.status(500).json({
-      success: false,
-      message: "Could not save registration."
-    });
+          (
+            name,
+            email,
+            mobile,
+            dob,
+            district
+          )
 
-  }
+          VALUES
+          ($1, $2, $3, $4, $5)
 
-});
+          RETURNING id
 
+          `,
 
-// ====================================
-// FORM 2 - CAMPAIGN COUPON CODE
-// ====================================
+          [
+            name,
+            email,
+            mobile,
+            dob,
+            district
+          ]
 
-app.post("/api/secret", async (req, res) => {
-
-  try {
-
-    const {
-      entryId,
-      secretCode
-    } = req.body;
-
-
-    if (
-      !entryId ||
-      !secretCode
-    ) {
-
-      return res.status(400).json({
-        success: false,
-        message: "Campaign coupon code is required."
-      });
-
-    }
+        );
 
 
-    // Campaign coupon should be 4 digits
-    if (!/^\d{4}$/.test(String(secretCode))) {
-
-      return res.status(400).json({
-        success: false,
-        message: "Coupon code must be 4 digits."
-      });
-
-    }
+      const entryId =
+        result.rows[0].id;
 
 
-    const result = await pool.query(
-      `
-      UPDATE participants
-      SET
-        secret_code = $1,
-        secret_submitted_at = CURRENT_TIMESTAMP
-      WHERE id = $2
-      RETURNING id
-      `,
-      [
-        secretCode,
+      console.log(
+        "Registration saved:",
         entryId
-      ]
-    );
+      );
 
 
-    if (result.rows.length === 0) {
+      res.json({
 
-      return res.status(404).json({
-        success: false,
-        message: "Registration not found."
+        success: true,
+
+        entryId:
+          entryId
+
       });
 
     }
 
+    catch (error) {
 
-    console.log(
-      "Coupon code saved. Entry ID:",
-      entryId
-    );
-
-
-    res.json({
-      success: true
-    });
+      console.error(
+        "Registration error:",
+        error
+      );
 
 
-  } catch (error) {
+      res
+        .status(500)
+        .json({
 
-    console.error(
-      "Coupon save error:",
-      error
-    );
+          success: false,
 
+          message:
+            "Could not save registration."
 
-    res.status(500).json({
-      success: false,
-      message: "Could not save coupon code."
-    });
+        });
+
+    }
 
   }
+);
 
-});
+
+// ====================================
+// COUPON
+// ====================================
+
+app.post(
+  "/api/secret",
+  async function(req, res) {
+
+    try {
+
+      const {
+        entryId,
+        secretCode
+      } = req.body;
+
+
+      if (
+        !entryId ||
+        !secretCode
+      ) {
+
+        return res
+          .status(400)
+          .json({
+
+            success: false,
+
+            message:
+              "Coupon code is required."
+
+          });
+
+      }
+
+
+      // Only 6–8 digits
+
+      if (
+        !/^[0-9]{6,8}$/
+          .test(String(secretCode))
+      ) {
+
+        return res
+          .status(400)
+          .json({
+
+            success: false,
+
+            message:
+              "Coupon must contain 6 to 8 digits."
+
+          });
+
+      }
+
+
+      const result =
+        await pool.query(
+
+          `
+
+          UPDATE participants
+
+          SET
+
+            secret_code = $1,
+
+            secret_submitted_at =
+              CURRENT_TIMESTAMP
+
+          WHERE id = $2
+
+          RETURNING id
+
+          `,
+
+          [
+            secretCode,
+            entryId
+          ]
+
+        );
+
+
+      if (
+        result.rows.length === 0
+      ) {
+
+        return res
+          .status(404)
+          .json({
+
+            success: false,
+
+            message:
+              "Registration not found."
+
+          });
+
+      }
+
+
+      console.log(
+        "Coupon saved:",
+        entryId
+      );
+
+
+      res.json({
+
+        success: true
+
+      });
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Coupon error:",
+        error
+      );
+
+
+      res
+        .status(500)
+        .json({
+
+          success: false,
+
+          message:
+            "Could not save coupon."
+
+        });
+
+    }
+
+  }
+);
 
 
 // ====================================
 // ADMIN LOGIN
 // ====================================
 
-app.post("/api/admin/login", async (req, res) => {
+app.post(
+  "/api/admin/login",
+  async function(req, res) {
 
-  try {
+    try {
 
-    const {
-      password
-    } = req.body;
+      const {
+        password
+      } = req.body;
 
 
-    if (
-      !process.env.ADMIN_PASSWORD ||
-      password !== process.env.ADMIN_PASSWORD
-    ) {
+      if (
+        !process.env.ADMIN_PASSWORD ||
+        password !==
+          process.env.ADMIN_PASSWORD
+      ) {
 
-      return res.status(401).json({
-        success: false,
-        message: "Wrong password."
+        return res
+          .status(401)
+          .json({
+
+            success: false,
+
+            message:
+              "Wrong password."
+
+          });
+
+      }
+
+
+      res.json({
+
+        success: true
+
       });
 
     }
 
+    catch (error) {
 
-    res.json({
-      success: true
-    });
-
-
-  } catch (error) {
-
-    console.error(
-      "Admin login error:",
-      error
-    );
+      console.error(
+        "Admin login error:",
+        error
+      );
 
 
-    res.status(500).json({
-      success: false,
-      message: "Server error."
-    });
+      res
+        .status(500)
+        .json({
+
+          success: false,
+
+          message:
+            "Server error."
+
+        });
+
+    }
 
   }
-
-});
+);
 
 
 // ====================================
 // ADMIN DATA
 // ====================================
 
-app.post("/api/admin/data", async (req, res) => {
+app.post(
+  "/api/admin/data",
+  async function(req, res) {
 
-  try {
+    try {
 
-    const {
-      password
-    } = req.body;
+      const {
+        password
+      } = req.body;
 
 
-    // Check admin password
-    if (
-      !process.env.ADMIN_PASSWORD ||
-      password !== process.env.ADMIN_PASSWORD
-    ) {
+      if (
+        !process.env.ADMIN_PASSWORD ||
+        password !==
+          process.env.ADMIN_PASSWORD
+      ) {
 
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized."
+        return res
+          .status(401)
+          .json({
+
+            success: false,
+
+            message:
+              "Unauthorized."
+
+          });
+
+      }
+
+
+      const result =
+        await pool.query(`
+
+          SELECT
+
+            id,
+
+            name,
+
+            email,
+
+            mobile,
+
+            dob,
+
+            district,
+
+            secret_code,
+
+            created_at,
+
+            secret_submitted_at
+
+          FROM participants
+
+          ORDER BY id DESC
+
+        `);
+
+
+      res.json({
+
+        success: true,
+
+        count:
+          result.rows.length,
+
+        participants:
+          result.rows
+
       });
 
     }
 
+    catch (error) {
 
-    // Return campaign entries
-    // including email and campaign coupon code.
-    const result = await pool.query(`
-      SELECT
-        id,
-        name,
-        email,
-        mobile,
-        dob,
-        district,
-        secret_code,
-        created_at,
-        secret_submitted_at
-      FROM participants
-      ORDER BY id DESC
-    `);
+      console.error(
+        "Admin data error:",
+        error
+      );
 
 
-    res.json({
-      success: true,
-      count: result.rows.length,
-      participants: result.rows
-    });
+      res
+        .status(500)
+        .json({
 
+          success: false,
 
-  } catch (error) {
+          message:
+            "Could not load data."
 
-    console.error(
-      "Admin data error:",
-      error
-    );
+        });
 
-
-    res.status(500).json({
-      success: false,
-      message: "Could not load data."
-    });
+    }
 
   }
-
-});
+);
 
 
 // ====================================
 // HEALTH CHECK
 // ====================================
 
-app.get("/api/health", async (req, res) => {
+app.get(
+  "/api/health",
+  async function(req, res) {
 
-  try {
+    try {
 
-    await pool.query("SELECT 1");
-
-
-    res.json({
-      status: "OK",
-      database: "connected"
-    });
+      await pool.query(
+        "SELECT 1"
+      );
 
 
-  } catch (error) {
+      res.json({
 
-    console.error(
-      "Health check error:",
-      error
-    );
+        status: "OK",
+
+        database:
+          "connected"
+
+      });
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Health error:",
+        error
+      );
 
 
-    res.status(500).json({
-      status: "ERROR",
-      database: "not connected"
-    });
+      res
+        .status(500)
+        .json({
+
+          status:
+            "ERROR",
+
+          database:
+            "not connected"
+
+        });
+
+    }
 
   }
-
-});
+);
 
 
 // ====================================
 // 404 API
 // ====================================
 
-app.use("/api", (req, res) => {
+app.use(
+  "/api",
+  function(req, res) {
 
-  res.status(404).json({
-    success: false,
-    message: "API endpoint not found."
-  });
+    res
+      .status(404)
+      .json({
 
-});
+        success: false,
+
+        message:
+          "API endpoint not found."
+
+      });
+
+  }
+);
 
 
 // ====================================
 // ERROR HANDLER
 // ====================================
 
-app.use((error, req, res, next) => {
+app.use(
+  function(error, req, res, next) {
 
-  console.error(
-    "Server error:",
-    error
-  );
+    console.error(
+      "Server error:",
+      error
+    );
 
 
-  res.status(500).json({
-    success: false,
-    message: "Internal server error."
-  });
+    res
+      .status(500)
+      .json({
 
-});
+        success: false,
+
+        message:
+          "Internal server error."
+
+      });
+
+  }
+);
 
 
 // ====================================
-// START SERVER
+// START
 // ====================================
 
 const PORT =
@@ -511,7 +765,7 @@ const PORT =
 app.listen(
   PORT,
   "0.0.0.0",
-  async () => {
+  async function() {
 
     console.log(
       `Server running on port ${PORT}`
