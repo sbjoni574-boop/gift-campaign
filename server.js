@@ -18,7 +18,10 @@ const pool = new Pool({
     : false
 });
 
-// Create table
+// ------------------------------------
+// Create database table
+// ------------------------------------
+
 async function createTable() {
   try {
     await pool.query(`
@@ -35,7 +38,6 @@ async function createTable() {
     `);
 
     console.log("Database table ready ✅");
-
   } catch (error) {
     console.error("Database table error:", error.message);
   }
@@ -43,13 +45,10 @@ async function createTable() {
 
 // ------------------------------------
 // FORM 1
-// Save Name, Mobile, DOB, District
 // ------------------------------------
 
 app.post("/api/register", async (req, res) => {
-
   try {
-
     const {
       name,
       mobile,
@@ -70,51 +69,33 @@ app.post("/api/register", async (req, res) => {
       VALUES ($1, $2, $3, $4)
       RETURNING id
       `,
-      [
-        name,
-        mobile,
-        dob,
-        district
-      ]
+      [name, mobile, dob, district]
     );
 
     const entryId = result.rows[0].id;
 
-    console.log(
-      "Form 1 saved. Entry ID:",
-      entryId
-    );
+    console.log("Form 1 saved. Entry ID:", entryId);
 
     res.json({
       success: true,
-      entryId: entryId
+      entryId
     });
 
   } catch (error) {
-
-    console.error(
-      "Form 1 save error:",
-      error.message
-    );
+    console.error("Form 1 save error:", error.message);
 
     res.status(500).json({
       message: "Could not save registration."
     });
-
   }
-
 });
-
 
 // ------------------------------------
 // FORM 2
-// Save Campaign Secret Code
 // ------------------------------------
 
 app.post("/api/secret-code", async (req, res) => {
-
   try {
-
     const {
       entryId,
       secretCode
@@ -135,54 +116,112 @@ app.post("/api/secret-code", async (req, res) => {
       WHERE id = $2
       RETURNING id
       `,
-      [
-        secretCode,
-        entryId
-      ]
+      [secretCode, entryId]
     );
 
     if (result.rowCount === 0) {
-
       return res.status(404).json({
         message: "Entry not found."
       });
-
     }
 
-    console.log(
-      "Form 2 saved. Entry ID:",
-      entryId
-    );
+    console.log("Form 2 saved. Entry ID:", entryId);
 
     res.json({
       success: true,
-      entryId: entryId
+      entryId
     });
 
   } catch (error) {
-
-    console.error(
-      "Form 2 save error:",
-      error.message
-    );
+    console.error("Form 2 save error:", error.message);
 
     res.status(500).json({
       message: "Could not save secret code."
     });
-
   }
-
 });
 
+// ------------------------------------
+// ADMIN LOGIN
+// ------------------------------------
+
+app.post("/api/admin/login", (req, res) => {
+  const { password } = req.body;
+
+  if (!process.env.ADMIN_PASSWORD) {
+    return res.status(500).json({
+      success: false,
+      message: "ADMIN_PASSWORD is not configured."
+    });
+  }
+
+  if (password !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).json({
+      success: false,
+      message: "Wrong password."
+    });
+  }
+
+  res.json({
+    success: true
+  });
+});
+
+// ------------------------------------
+// ADMIN DATA
+// ------------------------------------
+
+app.post("/api/admin/data", async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    if (!process.env.ADMIN_PASSWORD ||
+        password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized."
+      });
+    }
+
+    const result = await pool.query(`
+      SELECT
+        id,
+        name,
+        mobile,
+        dob,
+        district,
+        CASE
+          WHEN secret_code IS NULL THEN NULL
+          ELSE '••••••'
+        END AS secret_code,
+        created_at,
+        secret_submitted_at
+      FROM participants
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      success: true,
+      count: result.rows.length,
+      participants: result.rows
+    });
+
+  } catch (error) {
+    console.error("Admin data error:", error.message);
+
+    res.status(500).json({
+      success: false,
+      message: "Could not load data."
+    });
+  }
+});
 
 // ------------------------------------
 // Health check
 // ------------------------------------
 
 app.get("/api/health", async (req, res) => {
-
   try {
-
     await pool.query("SELECT 1");
 
     res.json({
@@ -191,16 +230,12 @@ app.get("/api/health", async (req, res) => {
     });
 
   } catch (error) {
-
     res.status(500).json({
       status: "ERROR",
       database: "not connected"
     });
-
   }
-
 });
-
 
 // ------------------------------------
 // Start server
@@ -209,11 +244,6 @@ app.get("/api/health", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", async () => {
-
-  console.log(
-    `Server running on port ${PORT}`
-  );
-
+  console.log(`Server running on port ${PORT}`);
   await createTable();
-
 });
