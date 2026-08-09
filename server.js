@@ -41,7 +41,6 @@ const pool = new Pool({
 async function createTable() {
   try {
 
-    // Create table if it does not exist
     await pool.query(`
       CREATE TABLE IF NOT EXISTS participants (
         id SERIAL PRIMARY KEY,
@@ -55,8 +54,6 @@ async function createTable() {
       )
     `);
 
-
-    // Add missing columns if old table already existed
     await pool.query(`
       ALTER TABLE participants
       ADD COLUMN IF NOT EXISTS secret_code VARCHAR(100)
@@ -71,7 +68,6 @@ async function createTable() {
       ALTER TABLE participants
       ADD COLUMN IF NOT EXISTS secret_submitted_at TIMESTAMP
     `);
-
 
     console.log("Database table ready ✅");
 
@@ -114,8 +110,6 @@ app.post("/api/register", async (req, res) => {
       district
     } = req.body;
 
-
-    // Validation
     if (
       !name ||
       !mobile ||
@@ -130,8 +124,6 @@ app.post("/api/register", async (req, res) => {
 
     }
 
-
-    // Save registration
     const result = await pool.query(
       `
       INSERT INTO participants
@@ -153,22 +145,18 @@ app.post("/api/register", async (req, res) => {
       ]
     );
 
-
     const entryId =
       result.rows[0].id;
-
 
     console.log(
       "Form 1 saved. Entry ID:",
       entryId
     );
 
-
     res.json({
       success: true,
       entryId: entryId
     });
-
 
   } catch (error) {
 
@@ -176,7 +164,6 @@ app.post("/api/register", async (req, res) => {
       "Form 1 save error:",
       error
     );
-
 
     res.status(500).json({
       success: false,
@@ -201,7 +188,6 @@ app.post("/api/secret", async (req, res) => {
       secretCode
     } = req.body;
 
-
     if (
       !entryId ||
       !secretCode
@@ -213,7 +199,6 @@ app.post("/api/secret", async (req, res) => {
       });
 
     }
-
 
     const result = await pool.query(
       `
@@ -230,7 +215,6 @@ app.post("/api/secret", async (req, res) => {
       ]
     );
 
-
     if (result.rows.length === 0) {
 
       return res.status(404).json({
@@ -240,17 +224,14 @@ app.post("/api/secret", async (req, res) => {
 
     }
 
-
     console.log(
       "Form 2 saved. Entry ID:",
       entryId
     );
 
-
     res.json({
       success: true
     });
-
 
   } catch (error) {
 
@@ -258,7 +239,6 @@ app.post("/api/secret", async (req, res) => {
       "Form 2 save error:",
       error
     );
-
 
     res.status(500).json({
       success: false,
@@ -282,7 +262,6 @@ app.post("/api/admin/login", async (req, res) => {
       password
     } = req.body;
 
-
     if (
       !process.env.ADMIN_PASSWORD ||
       password !== process.env.ADMIN_PASSWORD
@@ -295,11 +274,9 @@ app.post("/api/admin/login", async (req, res) => {
 
     }
 
-
     res.json({
       success: true
     });
-
 
   } catch (error) {
 
@@ -307,7 +284,6 @@ app.post("/api/admin/login", async (req, res) => {
       "Admin login error:",
       error
     );
-
 
     res.status(500).json({
       success: false,
@@ -331,7 +307,6 @@ app.post("/api/admin/data", async (req, res) => {
       password
     } = req.body;
 
-
     // Check admin password
     if (
       !process.env.ADMIN_PASSWORD ||
@@ -345,7 +320,9 @@ app.post("/api/admin/data", async (req, res) => {
 
     }
 
-
+    // IMPORTANT:
+    // Campaign coupon/secret code is returned
+    // directly instead of being masked.
     const result = await pool.query(`
       SELECT
         id,
@@ -353,21 +330,12 @@ app.post("/api/admin/data", async (req, res) => {
         mobile,
         dob,
         district,
-
-        CASE
-          WHEN secret_code IS NULL
-          THEN NULL
-          ELSE '••••••'
-        END AS secret_code,
-
+        secret_code,
         created_at,
         secret_submitted_at
-
       FROM participants
-
       ORDER BY id DESC
     `);
-
 
     res.json({
       success: true,
@@ -375,14 +343,12 @@ app.post("/api/admin/data", async (req, res) => {
       participants: result.rows
     });
 
-
   } catch (error) {
 
     console.error(
       "Admin data error:",
       error
     );
-
 
     res.status(500).json({
       success: false,
@@ -404,12 +370,10 @@ app.get("/api/health", async (req, res) => {
 
     await pool.query("SELECT 1");
 
-
     res.json({
       status: "OK",
       database: "connected"
     });
-
 
   } catch (error) {
 
@@ -417,7 +381,6 @@ app.get("/api/health", async (req, res) => {
       "Health check error:",
       error
     );
-
 
     res.status(500).json({
       status: "ERROR",
@@ -454,7 +417,6 @@ app.use((error, req, res, next) => {
     error
   );
 
-
   res.status(500).json({
     success: false,
     message: "Internal server error."
@@ -469,7 +431,6 @@ app.use((error, req, res, next) => {
 
 const PORT =
   process.env.PORT || 3000;
-
 
 app.listen(
   PORT,
