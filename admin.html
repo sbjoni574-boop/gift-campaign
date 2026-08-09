@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Admin Panel - Gift Campaign</title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -103,7 +110,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 900px;
+      min-width: 1050px;
     }
 
     th,
@@ -129,6 +136,7 @@
     }
 
     @media (max-width: 600px) {
+
       .container {
         margin: 10px auto;
         padding: 10px;
@@ -146,11 +154,16 @@
         float: none;
         max-width: 100%;
       }
+
     }
+
   </style>
+
 </head>
 
+
 <body>
+
 
 <!-- ================================
      LOGIN
@@ -164,7 +177,9 @@
 
       <h1>🔐 Admin Login</h1>
 
-      <p>Enter the administrator password.</p>
+      <p>
+        Enter the administrator password.
+      </p>
 
       <form id="loginForm">
 
@@ -215,7 +230,9 @@
         Logout
       </button>
 
-      <h1>🎁 Gift Campaign Admin</h1>
+      <h1>
+        🎁 Gift Campaign Admin
+      </h1>
 
       <div style="clear: both;"></div>
 
@@ -225,19 +242,24 @@
       <div class="stats">
 
         <div class="stat">
+
           Total Entries
 
           <strong id="totalEntries">
             0
           </strong>
+
         </div>
 
+
         <div class="stat">
-          Secret Submitted
+
+          Coupon Submitted
 
           <strong id="secretEntries">
             0
           </strong>
+
         </div>
 
       </div>
@@ -249,7 +271,7 @@
         type="text"
         id="search"
         class="search"
-        placeholder="Search ID, name, mobile, district or code..."
+        placeholder="Search ID, name, email, mobile, district or coupon..."
         oninput="filterTable()"
       >
 
@@ -263,27 +285,40 @@
           <thead>
 
             <tr>
+
               <th>ID</th>
+
               <th>Name</th>
+
+              <th>Email</th>
+
               <th>Mobile</th>
+
               <th>DOB</th>
+
               <th>District</th>
-              <th>Secret Code</th>
+
+              <th>Coupon Code</th>
+
               <th>Status</th>
+
               <th>Created</th>
+
             </tr>
 
           </thead>
+
 
           <tbody id="tableBody">
 
             <tr>
 
               <td
-                colspan="8"
+                colspan="9"
                 style="text-align:center;"
               >
                 Loading...
+
               </td>
 
             </tr>
@@ -330,9 +365,15 @@ document
           .value;
 
       if (!password) {
-        alert("Please enter password.");
+
+        alert(
+          "Please enter password."
+        );
+
         return;
+
       }
+
 
       const status =
         document
@@ -340,6 +381,7 @@ document
 
       status.textContent =
         "Checking password...";
+
 
       try {
 
@@ -357,11 +399,14 @@ document
               body: JSON.stringify({
                 password: password
               })
+
             }
           );
 
+
         const data =
           await response.json();
+
 
         if (
           !response.ok ||
@@ -376,19 +421,34 @@ document
           );
 
           return;
+
         }
 
-        adminPassword = password;
+
+        adminPassword =
+          password;
+
 
         document
-          .getElementById("loginSection")
-          .classList.add("hidden");
+          .getElementById(
+            "loginSection"
+          )
+          .classList.add(
+            "hidden"
+          );
+
 
         document
-          .getElementById("adminSection")
-          .classList.remove("hidden");
+          .getElementById(
+            "adminSection"
+          )
+          .classList.remove(
+            "hidden"
+          );
+
 
         status.textContent = "";
+
 
         await loadAdminData();
 
@@ -425,6 +485,7 @@ async function loadAdminData() {
       await fetch(
         "/api/admin/data",
         {
+
           method: "POST",
 
           headers: {
@@ -433,13 +494,17 @@ async function loadAdminData() {
           },
 
           body: JSON.stringify({
-            password: adminPassword
+            password:
+              adminPassword
           })
+
         }
       );
 
+
     const data =
       await response.json();
+
 
     if (
       !response.ok ||
@@ -452,27 +517,43 @@ async function loadAdminData() {
       );
 
       return;
+
     }
+
 
     allParticipants =
       data.participants || [];
 
+
     document
-      .getElementById("totalEntries")
+      .getElementById(
+        "totalEntries"
+      )
       .textContent =
         allParticipants.length;
+
 
     const secretCount =
       allParticipants.filter(
         function(p) {
-          return p.secret_code !== null;
+
+          return (
+            p.secret_code !== null &&
+            p.secret_code !== undefined &&
+            p.secret_code !== ""
+          );
+
         }
       ).length;
 
+
     document
-      .getElementById("secretEntries")
+      .getElementById(
+        "secretEntries"
+      )
       .textContent =
         secretCount;
+
 
     displayTable(
       allParticipants
@@ -507,24 +588,33 @@ function displayTable(participants) {
       "tableBody"
     );
 
+
   body.innerHTML = "";
+
 
   if (
     participants.length === 0
   ) {
 
     body.innerHTML = `
+
       <tr>
+
         <td
-          colspan="8"
+          colspan="9"
           style="text-align:center;"
         >
+
           No entries found.
+
         </td>
+
       </tr>
+
     `;
 
     return;
+
   }
 
 
@@ -534,6 +624,7 @@ function displayTable(participants) {
       const row =
         document.createElement("tr");
 
+
       const created =
         p.created_at
           ? new Date(
@@ -541,10 +632,12 @@ function displayTable(participants) {
             ).toLocaleString()
           : "-";
 
+
       const secretStatus =
         p.secret_code
           ? "✅ Submitted"
           : "❌ Not submitted";
+
 
       row.innerHTML = `
 
@@ -552,21 +645,31 @@ function displayTable(participants) {
           ${escapeHTML(p.id)}
         </td>
 
+
         <td>
           ${escapeHTML(p.name)}
         </td>
+
+
+        <td>
+          ${escapeHTML(p.email || "-")}
+        </td>
+
 
         <td>
           ${escapeHTML(p.mobile)}
         </td>
 
+
         <td>
           ${escapeHTML(p.dob)}
         </td>
 
+
         <td>
           ${escapeHTML(p.district)}
         </td>
+
 
         <td class="code">
           ${escapeHTML(
@@ -574,15 +677,18 @@ function displayTable(participants) {
           )}
         </td>
 
+
         <td>
           ${secretStatus}
         </td>
+
 
         <td>
           ${escapeHTML(created)}
         </td>
 
       `;
+
 
       body.appendChild(row);
 
@@ -605,6 +711,7 @@ function filterTable() {
       .toLowerCase()
       .trim();
 
+
   if (!search) {
 
     displayTable(
@@ -612,6 +719,7 @@ function filterTable() {
     );
 
     return;
+
   }
 
 
@@ -627,19 +735,25 @@ function filterTable() {
 
           ||
 
-          String(p.name)
+          String(p.name || "")
             .toLowerCase()
             .includes(search)
 
           ||
 
-          String(p.mobile)
+          String(p.email || "")
             .toLowerCase()
             .includes(search)
 
           ||
 
-          String(p.district)
+          String(p.mobile || "")
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          String(p.district || "")
             .toLowerCase()
             .includes(search)
 
@@ -654,7 +768,10 @@ function filterTable() {
       }
     );
 
-  displayTable(filtered);
+
+  displayTable(
+    filtered
+  );
 
 }
 
@@ -669,20 +786,36 @@ function logout() {
 
   allParticipants = [];
 
-  document
-    .getElementById("adminSection")
-    .classList.add("hidden");
 
   document
-    .getElementById("loginSection")
-    .classList.remove("hidden");
+    .getElementById(
+      "adminSection"
+    )
+    .classList.add(
+      "hidden"
+    );
+
 
   document
-    .getElementById("password")
+    .getElementById(
+      "loginSection"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+
+  document
+    .getElementById(
+      "password"
+    )
     .value = "";
 
+
   document
-    .getElementById("loginStatus")
+    .getElementById(
+      "loginStatus"
+    )
     .textContent = "";
 
 }
@@ -695,7 +828,9 @@ function logout() {
 function escapeHTML(value) {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   div.textContent =
     value ?? "";
@@ -706,5 +841,7 @@ function escapeHTML(value) {
 
 </script>
 
+
 </body>
-      </html>
+
+                </html>
