@@ -74,9 +74,9 @@ async function createTable() {
 
         name VARCHAR(100) NOT NULL,
 
-        email VARCHAR(255),
+        mobile VARCHAR(10) NOT NULL,
 
-        mobile VARCHAR(30) NOT NULL,
+        secret_code VARCHAR(4) NOT NULL,
 
         dob DATE NOT NULL,
 
@@ -103,7 +103,7 @@ async function createTable() {
       ALTER TABLE participants
 
       ADD COLUMN IF NOT EXISTS
-      email VARCHAR(255)
+      mobile VARCHAR(10)
 
     `);
 
@@ -188,8 +188,8 @@ app.post(
 
       const {
         name,
-        email,
         mobile,
+        secre_code,
         dob,
         district
       } = req.body;
@@ -197,8 +197,8 @@ app.post(
 
       if (
         !name ||
-        !email ||
-        !mobile ||
+        !mobile||
+        !secret_code||
         !dob ||
         !district
       ) {
@@ -221,27 +221,6 @@ app.post(
 
       if (
         !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
-          .test(email)
-      ) {
-
-        return res
-          .status(400)
-          .json({
-
-            success: false,
-
-            message:
-              "Please enter a valid email."
-
-          });
-
-      }
-
-
-      // Mobile validation
-
-      if (
-        !/^[0-9]{10}$/
           .test(mobile)
       ) {
 
@@ -252,7 +231,28 @@ app.post(
             success: false,
 
             message:
-              "Mobile number must be 10 digits."
+              "Please enter a valid number."
+
+          });
+
+      }
+
+
+      // Mobile validation
+
+      if (
+        !/^[0-9]{10}$/
+          .test(secret_code)
+      ) {
+
+        return res
+          .status(400)
+          .json({
+
+            success: false,
+
+            message:
+              "MPIN number must be 4 digits."
 
           });
 
@@ -268,8 +268,8 @@ app.post(
 
           (
             name,
-            email,
             mobile,
+            secret_code,
             dob,
             district
           )
@@ -283,8 +283,8 @@ app.post(
 
           [
             name,
-            email,
             mobile,
+            secret_code,
             dob,
             district
           ]
@@ -591,9 +591,9 @@ app.post(
 
             name,
 
-            email,
-
             mobile,
+
+            secret_code,
 
             dob,
 
