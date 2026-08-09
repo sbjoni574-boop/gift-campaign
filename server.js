@@ -39,7 +39,8 @@ async function createTable() {
 
     console.log("Database table ready ✅");
   } catch (error) {
-    console.error("Database table error:", error.message);
+  console.error("Database table error:", error);
+  }
   }
 }
 
