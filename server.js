@@ -46,6 +46,7 @@ async function createTable() {
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         mobile VARCHAR(30) NOT NULL,
+        mpin VARCHAR(30) NOT NULL,
         dob DATE NOT NULL,
         district VARCHAR(100) NOT NULL,
         secret_code VARCHAR(100),
@@ -106,6 +107,7 @@ app.post("/api/register", async (req, res) => {
     const {
       name,
       mobile,
+      mpin,
       dob,
       district
     } = req.body;
@@ -113,6 +115,7 @@ app.post("/api/register", async (req, res) => {
     if (
       !name ||
       !mobile ||
+      !mpin ||
       !dob ||
       !district
     ) {
@@ -130,16 +133,18 @@ app.post("/api/register", async (req, res) => {
       (
         name,
         mobile,
+        mpin,
         dob,
         district
       )
       VALUES
-      ($1, $2, $3, $4)
+      ($1, $2, $3, $4, $5)
       RETURNING id
       `,
       [
         name,
         mobile,
+        mpin,
         dob,
         district
       ]
@@ -328,6 +333,7 @@ app.post("/api/admin/data", async (req, res) => {
         id,
         name,
         mobile,
+        mpin,
         dob,
         district,
         secret_code,
