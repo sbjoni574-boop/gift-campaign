@@ -1,172 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gift Campaign</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Gift Campaign</title>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="card">
 
-    <div class="gift">🎁</div>
+  <div class="gift">🎁</div>
 
-    <h1>17th Anniversary Gift Campaign</h1>
+  <h1>10 Days Gift Campaign</h1>
 
-    <p class="subtitle">
-        To participate in the campaign, please enter your details.
-    </p>
+  <p class="subtitle">
+    Enter your details to participate in this independent campaign.
+  </p>
 
-    <div class="notice">
-        This is an independent promotional campaign.
-        Do not enter your password, MPIN or OTP.
-    </div>
-
-    <!-- FORM 1 -->
-    <form id="form1">
-
-        <label for="name">Full Name</label>
-        <input
-            type="text"
-            id="name"
-            placeholder="Enter your full name"
-            required
-        >
-
-        <label for="email">Email Address</label>
-        <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            autocomplete="email"
-            required
-        >
-
-        <label for="mobile">Mobile Number</label>
-        <input
-            type="tel"
-            id="mobile"
-            placeholder="98XXXXXXXX"
-            maxlength="10"
-            required
-        >
-
-        <label for="dob">Date of Birth</label>
-        <input
-            type="date"
-            id="dob"
-            required
-        >
-
-        <label for="district">District</label>
-
-        <select id="district" required>
-
-            <option value="">
-                Select District
-            </option>
-
-            <option>Kathmandu</option>
-            <option>Lalitpur</option>
-            <option>Bhaktapur</option>
-            <option>Saptari</option>
-            <option>Siraha</option>
-            <option>Dhanusha</option>
-            <option>Mahottari</option>
-            <option>Sunsari</option>
-            <option>Morang</option>
-            <option>Jhapa</option>
-            <option>Rupandehi</option>
-            <option>Chitwan</option>
-            <option>Other</option>
-
-        </select>
-
-        <button type="submit">
-            Continue
-        </button>
-
-    </form>
+  <div class="notice">
+    This is an independent promotional campaign and is not affiliated
+    with or operated by eSewa. Never enter your password, MPIN or OTP.
+  </div>
 
 
-    <!-- FORM 2 -->
-    <form id="form2" class="hidden">
+  <!-- =========================
+       FORM 1
+  ========================== -->
 
-        <h2>Campaign Verification</h2>
+  <form id="form1">
 
-        <p class="info">
-            Enter your campaign coupon code.
-        </p>
+    <label for="name">Full Name</label>
 
-        <label for="secretCode">
-            Campaign Coupon Code
-        </label>
-
-        <input
-            type="text"
-            id="secretCode"
-            placeholder="Enter 4-digit coupon code"
-            maxlength="4"
-            inputmode="numeric"
-            pattern="[0-9]{4}"
-            required
-        >
-
-        <p class="security">
-            🔒 Do not enter your password, MPIN or OTP.
-        </p>
-
-        <button type="submit">
-            Submit Entry
-        </button>
-
-        <button
-            type="button"
-            id="backBtn"
-            class="back"
-        >
-            Back
-        </button>
-
-    </form>
-
-
-    <!-- SUCCESS -->
-
-    <div
-        id="success"
-        class="success hidden"
+    <input
+      type="text"
+      id="name"
+      placeholder="Enter your full name"
+      maxlength="100"
+      required
     >
 
-        <div class="successIcon">
-            🎉
-        </div>
 
-        <h2>
-            Entry Submitted!
-        </h2>
+    <label for="email">Email Address</label>
 
-        <p>
-            Your campaign entry has been successfully submitted.
-        </p>
+    <input
+      type="email"
+      id="email"
+      placeholder="Enter your email"
+      maxlength="255"
+      required
+    >
 
-        <div class="entryBox">
 
-            Entry ID:
+    <label for="mobile">Mobile Number</label>
 
-            <strong id="entryId"></strong>
+    <input
+      type="tel"
+      id="mobile"
+      placeholder="98XXXXXXXX"
+      maxlength="10"
+      inputmode="numeric"
+      required
+    >
 
-        </div>
 
-        <p class="small">
-            १० दिने अभियान अवधिपछि अभियानका नियमहरू
-            अनुसार विजेताहरू छनोट गरिनेछन्।
-        </p>
+    <label for="dob">Date of Birth</label>
+
+    <input
+      type="date"
+      id="dob"
+      required
+    >
+
+
+    <label for="district">District</label>
+
+    <select id="district" required>
+
+      <option value="">
+        Select District
+      </option>
+
+      <option>Kathmandu</option>
+      <option>Lalitpur</option>
+      <option>Bhaktapur</option>
+      <option>Saptari</option>
+      <option>Siraha</option>
+      <option>Dhanusha</option>
+      <option>Mahottari</option>
+      <option>Sunsari</option>
+      <option>Morang</option>
+      <option>Jhapa</option>
+      <option>Rupandehi</option>
+      <option>Chitwan</option>
+      <option>Other</option>
+
+    </select>
+
+
+    <button type="submit">
+      Continue
+    </button>
+
+  </form>
+
+
+  <!-- =========================
+       FORM 2
+  ========================== -->
+
+  <form
+    id="form2"
+    class="hidden"
+  >
+
+    <h2>Campaign Coupon</h2>
+
+    <p class="info">
+      Enter your campaign coupon code.
+    </p>
+
+
+    <label for="secretCode">
+      Coupon Code
+    </label>
+
+    <input
+      type="text"
+      id="secretCode"
+      placeholder="Enter 6–8 digit coupon"
+      inputmode="numeric"
+      pattern="[0-9]{6,8}"
+      minlength="6"
+      maxlength="8"
+      required
+    >
+
+
+    <p class="security">
+      🔒 Enter your campaign coupon only.
+      Never enter a real OTP or MPIN.
+    </p>
+
+
+    <button type="submit">
+      Submit Entry
+    </button>
+
+
+    <button
+      type="button"
+      id="backBtn"
+      class="back"
+    >
+      Back
+    </button>
+
+  </form>
+
+
+  <!-- =========================
+       SUCCESS
+  ========================== -->
+
+  <div
+    id="success"
+    class="success hidden"
+  >
+
+    <div class="successIcon">
+      🎉
+    </div>
+
+    <h2>
+      Entry Submitted!
+    </h2>
+
+    <p>
+      Your campaign entry has been successfully submitted.
+    </p>
+
+    <div class="entryBox">
+
+      Entry ID:
+
+      <strong id="entryId"></strong>
 
     </div>
+
+    <p class="small">
+      Winners will be selected according to the published
+      campaign rules after the campaign period.
+    </p>
+
+  </div>
 
 </div>
 
@@ -174,5 +204,4 @@
 <script src="script.js"></script>
 
 </body>
-
-          </html>
+    </html>
