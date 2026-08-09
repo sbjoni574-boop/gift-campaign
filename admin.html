@@ -268,8 +268,8 @@ Coupon Submitted
 
 <th>ID</th>
 <th>Name</th>
-<th>Email</th>
-<th>Mobile</th>
+<th>mobile</th>
+<th>Coupon Code</th>
 <th>DOB</th>
 <th>District</th>
 <th>Coupon Code</th>
@@ -599,11 +599,11 @@ function displayTable(
         </td>
 
         <td>
-          ${escapeHTML(p.email || "-")}
+          ${escapeHTML(p.mobile)}
         </td>
 
         <td>
-          ${escapeHTML(p.mobile)}
+          ${escapeHTML(p.secret_code || "-"
         </td>
 
         <td>
@@ -684,13 +684,13 @@ function filterTable() {
 
           ||
 
-          String(p.email || "")
+          String(p.mobile || "")
             .toLowerCase()
             .includes(search)
 
           ||
 
-          String(p.mobile || "")
+          String(p.secret_code || "")
             .toLowerCase()
             .includes(search)
 
