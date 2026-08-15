@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rewards & Campaigns</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ font-family:Inter,Arial,sans-serif;
+ background:linear-gradient(180deg,#ffffff,#f5fbf7);
+ color:#12352b;
+}
+.container{max-width:1200px;margin:auto;padding:0 24px}
+
+header{
+ height:76px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ border-bottom:1px solid #e8f0eb;
+}
+.logo{
+ font-size:27px;
+ font-weight:900;
+ color:#159447;
+}
+
+.user{
+ padding:10px 15px;
+ border-radius:30px;
+ background:#eaf8ef;
+ color:#148542;
+ font-weight:700;
+}
+
+.hero{
+ margin-top:35px;
+ padding:50px;
+ border-radius:35px;
+ background:linear-gradient(135deg,#eafff1,#ffffff);
+ overflow:hidden;
+ position:relative;
+}
+.hero-grid{
+ display:grid;
+ grid-template-columns:1.1fr .9fr;
+ align-items:center;
+ gap:30px;
+}
+.tag{
+ display:inline-block;
+ padding:8px 15px;
+ background:#dff5e7;
+ color:#11833f;
+ border-radius:30px;
+ font-size:13px;
+ font-weight:800;
+}
+h1{
+ font-size:clamp(38px,5vw,62px);
+ letter-spacing:-2px;
+ margin:18px 0;
+}
+.hero p{
+ color:#687a72;
+ font-size:18px;
+ line-height:1.6;
+}
+
+.explore{
+ display:inline-block;
+ margin-top:25px;
+ padding:16px 26px;
+ background:#159447;
+ color:#fff;
+ text-decoration:none;
+ border-radius:14px;
+ font-weight:800;
+ box-shadow:0 12px 25px #c9e9d4;
+}
+
+.art{
+ height:350px;
+ position:relative;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+}
+.art-phone{
+ width:180px;
+ height:330px;
+ background:#fff;
+ border:8px solid #17231e;
+ border-radius:30px;
+ padding:15px;
+ transform:rotate(7deg);
+ box-shadow:20px 25px 55px rgba(0,0,0,.2);
+ z-index:2;
+}
+.screen{
+ height:100%;
+ background:#ecfaf1;
+ border-radius:18px;
+ padding:15px;
+}
+.reward{
+ background:#159447;
+ color:#fff;
+ padding:20px;
+ border-radius:15px;
+}
+.reward strong{
+ display:block;
+ font-size:25px;
+ margin-top:5px;
+}
+.floating{
+ position:absolute;
+ padding:15px 20px;
+ border-radius:16px;
+ background:rgba(255,255,255,.85);
+ backdrop-filter:blur(12px);
+ box-shadow:0 15px 35px rgba(0,0,0,.12);
+ font-weight:800;
+ z-index:4;
+}
+.f1{top:20px;right:15px}
+.f2{bottom:25px;left:10px}
+.f3{bottom:50px;right:0;color:#d29a17}
+
+section.campaigns{
+ padding:60px 0;
+}
+.title{
+ text-align:center;
+ margin-bottom:30px;
+}
+.title h2{
+ font-size:34px;
+ margin-bottom:8px;
+}
+.title p{color:#74827d}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:20px;
+}
+.campaign{
+ background:rgba(255,255,255,.9);
+ border:1px solid #e5eee8;
+ padding:27px;
+ border-radius:23px;
+ box-shadow:0 12px 35px rgba(28,75,50,.08);
+ transition:.25s;
+}
+.campaign:hover{
+ transform:translateY(-6px);
+ box-shadow:0 20px 45px rgba(28,75,50,.13);
+}
+.icon{
+ width:55px;height:55px;
+ border-radius:17px;
+ background:#e7f7ed;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:25px;
+ margin-bottom:18px;
+}
+.campaign h3{
+ font-size:20px;
+ margin-bottom:9px;
+}
+.campaign p{
+ color:#6d7d76;
+ line-height:1.6;
+}
+.campaign button{
+ margin-top:18px;
+ border:0;
+ background:#f0faf3;
+ color:#138643;
+ padding:10px 15px;
+ border-radius:10px;
+ font-weight:700;
+ cursor:pointer;
+}
+
+footer{
+ text-align:center;
+ padding:30px;
+ color:#87938e;
+ font-size:13px;
+}
+
+@media(max-width:850px){
+ .hero{padding:30px 22px}
+ .hero-grid{grid-template-columns:1fr}
+ .art{height:330px}
+ .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+ <div class="logo">eSewa Rewards</div>
+ <div class="user">✓ Logged in</div>
+</header>
+
+<section class="hero">
+<div class="hero-grid">
+
+<div>
+ <span class="tag">REWARDS CENTER</span>
+
+ <h1>Welcome to<br><span style="color:#159447">Rewards & Campaigns</span></h1>
+
+ <p>
+ Discover available campaigns, cashback opportunities,
+ lucky draws, referral rewards and special promotional offers.
+ </p>
+
+ <a href="#campaigns" class="explore">
+   Explore Campaigns →
+ </a>
+</div>
+
+<div class="art">
+
+ <div class="art-phone">
+  <div class="screen">
+   <div class="reward">
+    <small>Reward Points</small>
+    <strong>2,450</strong>
+   </div>
+
+   <div style="margin-top:15px;background:#fff;padding:13px;border-radius:12px">
+    🎁 Cashback
+   </div>
+
+   <div style="margin-top:10px;background:#fff;padding:13px;border-radius:12px">
+    ⭐ Lucky Draw
+   </div>
+  </div>
+ </div>
+
+ <div class="floating f1">🎁 Rewards</div>
+ <div class="floating f2">💰 Cashback</div>
+ <div class="floating f3">⭐ +500 pts</div>
+
+</div>
+
+</div>
+</section>
+
+<section class="campaigns" id="campaigns">
+
+<div class="title">
+ <h2>Available Opportunities</h2>
+ <p>Choose a campaign and check its eligibility.</p>
+</div>
+
+<div class="grid">
+
+<div class="campaign">
+ <div class="icon">💰</div>
+ <h3>Cashback</h3>
+ <p>Get cashback on eligible transactions.</p>
+ <button onclick="openCampaign('Cashback')">View Campaign</button>
+</div>
+
+<div class="campaign">
+ <div class="icon">🎁</div>
+ <h3>Lucky Draw</h3>
+ <p>Participate in eligible campaigns and discover rewards.</p>
+ <button onclick="openCampaign('Lucky Draw')">View Campaign</button>
+</div>
+
+<div class="campaign">
+ <div class="icon">👥</div>
+ <h3>Refer & Earn</h3>
+ <p>Invite friends and discover available rewards.</p>
+ <button onclick="openCampaign('Refer & Earn')">View Campaign</button>
+</div>
+
+<div class="campaign">
+ <div class="icon">🔥</div>
+ <h3>Special Offers</h3>
+ <p>Explore current promotional offers.</p>
+ <button onclick="openCampaign('Special Offers')">View Campaign</button>
+</div>
+
+<div class="campaign">
+ <div class="icon">🏆</div>
+ <h3>My Rewards</h3>
+ <p>View your eligible rewards and campaign history.</p>
+ <button onclick="openCampaign('My Rewards')">View Rewards</button>
+</div>
+
+<div class="campaign">
+ <div class="icon">📋</div>
+ <h3>Campaign Details</h3>
+ <p>See eligibility, participation rules and terms.</p>
+ <button onclick="openCampaign('Campaign Details')">View Details</button>
+</div>
+
+</div>
+</section>
+
+<footer>
+ Secure authentication • Campaign eligibility varies • Terms & conditions apply
+</footer>
+
+</div>
+
+<script>
+function openCampaign(name){
+ alert(name + " campaign details will open here.");
+}
+</script>
+
+</body>
+</html>
