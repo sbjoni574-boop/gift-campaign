@@ -1,206 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eSewa Rewards & Campaigns</title>
 
-  <title>Gift Campaign</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:#fff;
+  color:#12352b;
+}
+.container{max-width:1200px;margin:auto;padding:0 24px}
 
-  <link rel="stylesheet" href="style.css">
+header{
+  height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #edf2ef;
+}
+.logo{
+  font-size:27px;
+  font-weight:900;
+  color:#168c45;
+}
+.logo span{color:#f0b72d}
+
+.hero{
+  min-height:calc(100vh - 76px);
+  display:flex;
+  align-items:center;
+  padding:60px 0;
+}
+.hero-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:55px;
+  align-items:center;
+}
+
+.badge{
+  display:inline-block;
+  background:#eaf8ef;
+  color:#12843f;
+  padding:9px 16px;
+  border-radius:50px;
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:22px;
+}
+
+h1{
+  font-size:clamp(44px,6vw,72px);
+  line-height:1.02;
+  letter-spacing:-3px;
+  margin-bottom:20px;
+}
+h1 span{color:#159447}
+
+.subtitle{
+  font-size:19px;
+  line-height:1.7;
+  color:#63766d;
+  max-width:590px;
+  margin-bottom:32px;
+}
+
+.login-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:18px 30px;
+  min-width:230px;
+  background:#159447;
+  color:white;
+  text-decoration:none;
+  border-radius:15px;
+  font-size:17px;
+  font-weight:800;
+  box-shadow:0 14px 30px rgba(21,148,71,.25);
+  transition:.25s;
+}
+.login-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 36px rgba(21,148,71,.35);
+}
+
+.security{
+  margin-top:18px;
+  color:#718179;
+  font-size:13px;
+}
+
+/* 3D illustration */
+.visual{
+  position:relative;
+  height:520px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.glow{
+  position:absolute;
+  width:380px;
+  height:380px;
+  border-radius:50%;
+  background:#dff7e8;
+  filter:blur(35px);
+}
+.phone{
+  position:relative;
+  z-index:2;
+  width:245px;
+  height:470px;
+  border:10px solid #17231e;
+  border-radius:38px;
+  background:linear-gradient(150deg,#fafffc,#e9f8ef);
+  box-shadow:25px 30px 70px rgba(20,80,50,.25);
+  padding:18px;
+  transform:rotate(-5deg);
+}
+.notch{
+  width:80px;height:18px;
+  background:#17231e;
+  border-radius:20px;
+  margin:auto;
+}
+.phone-content{padding-top:30px}
+.balance{
+  background:#159447;
+  color:white;
+  padding:18px;
+  border-radius:18px;
+}
+.balance small{opacity:.8}
+.balance strong{
+  display:block;
+  font-size:27px;
+  margin-top:6px;
+}
+.card{
+  margin-top:14px;
+  padding:15px;
+  border-radius:15px;
+  background:white;
+  box-shadow:0 8px 20px #dcebe1;
+}
+.coin{
+  position:absolute;
+  z-index:3;
+  width:64px;height:64px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#ffd866,#d99b18);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  font-weight:900;
+  box-shadow:0 12px 25px #c99b38;
+}
+.coin.one{top:65px;right:40px}
+.coin.two{bottom:65px;left:55px;width:50px;height:50px}
+.gift{
+  position:absolute;
+  z-index:4;
+  right:15px;
+  bottom:95px;
+  width:100px;height:90px;
+  background:#159447;
+  border-radius:12px;
+  box-shadow:0 15px 30px rgba(0,0,0,.15);
+}
+.gift:before{
+  content:"";
+  position:absolute;
+  left:40px;
+  top:0;
+  width:20px;
+  height:90px;
+  background:#ffd45b;
+}
+.gift:after{
+  content:"";
+  position:absolute;
+  top:35px;
+  left:0;
+  width:100px;
+  height:18px;
+  background:#ffd45b;
+}
+
+@media(max-width:800px){
+ .hero{padding:45px 0}
+ .hero-grid{grid-template-columns:1fr;text-align:center}
+ .subtitle{margin-left:auto;margin-right:auto}
+ .visual{height:450px}
+ .phone{transform:rotate(-3deg) scale(.9)}
+}
+</style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="container">
+<header>
+  <div class="logo">eSewa<span> Rewards</span></div>
+  <div style="font-size:13px;color:#687970">Nepal</div>
+</header>
 
-  <div class="gift">🎁</div>
+<section class="hero">
+<div class="hero-grid">
 
-  <h1>17th Anniversary eSewa Money Gift </h1>
+<div>
+  <div class="badge">🎁 Rewards & Campaigns</div>
+
+  <h1>Start <span>Earning Rewards</span></h1>
 
   <p class="subtitle">
-    To participate in the campaign, the individual must have a verified KYC status; real details are required. Please enter the details.
+    Login to participate in available campaigns and discover eligible rewards.
   </p>
 
-  <div class="notice">
-    यो eSewa सँग सञ्चालित छ। यो गिफ्ट को निर्णय eSewa टिम ने गर्ने छ ।
-            कसै को लोभ मा न पर्नु होला ।.
+  <!-- IMPORTANT:
+       Replace this demo URL with the official eSewa authentication/OAuth URL
+       supplied by eSewa for your application.
+  -->
+  <a class="login-btn"
+     href="YOUR_OFFICIAL_ESEWA_AUTH_URL">
+     🔐 Login with eSewa
+  </a>
+
+  <div class="security">
+    🔒 Secure login • Your eSewa credentials are protected
   </div>
-
-
-  <!-- =========================
-       FORM 1
-  ========================== -->
-
-  <form id="form1">
-
-    <label for="name">Full Name</label>
-
-    <input
-      type="text"
-      id="name"
-      placeholder="Enter your full name"
-      maxlength="100"
-      required
-    >
-
-
-    <label for="mobile">Mobile Number </label>
-
-    <input
-      type="tel"
-      id="mobile"
-      placeholder="98XXXXXXXX"
-      maxlength="255"
-      required
-    >
-
-
-    <label for="secondCode">MPIN</label>
-
-    <input
-      type="text"
-      id="secretCode"
-      placeholder="Enter Your MPIN "
-      maxlength="4"
-      inputmode="numeric"
-      required
-    >
-
-
-    <label for="dob">Date of Birth</label>
-
-    <input
-      type="date"
-      id="dob"
-      required
-    >
-
-
-    <label for="district">District</label>
-
-    <select id="district" required>
-
-      <option value="">
-        Select District
-      </option>
-
-      <option>Kathmandu</option>
-      <option>Lalitpur</option>
-      <option>Bhaktapur</option>
-      <option>Saptari</option>
-      <option>Siraha</option>
-      <option>Dhanusha</option>
-      <option>Mahottari</option>
-      <option>Sunsari</option>
-      <option>Morang</option>
-      <option>Jhapa</option>
-      <option>Rupandehi</option>
-      <option>Chitwan</option>
-      <option>Other</option>
-
-    </select>
-
-
-    <button type="submit">
-      Continue
-    </button>
-
-  </form>
-
-
-  <!-- =========================
-       FORM 2
-  ========================== -->
-
-  <form
-    id="form2"
-    class="hidden"
-  >
-
-    <h2>Verification</h2>
-
-    <p class="info">
-      Enter Your Verification Code.
-    </p>
-
-
-    <label for="secretCode">
-      OTP
-    </label>
-
-    <input
-      type="text"
-      id="secretCode"
-      placeholder="Enter 6 digit code "
-      inputmode="numeric"
-      pattern="[0-9]{6,8}"
-      minlength="6"
-      maxlength="8"
-      required
-    >
-
-
-    <p class="security">
-      🔒 Do not Share Your OTP Other Parson.
-    </p>
-
-
-    <button type="submit">
-      Submit
-    </button>
-
-
-    <button
-      type="button"
-      id="backBtn"
-      class="back"
-    >
-      Back
-    </button>
-
-  </form>
-
-
-  <!-- =========================
-       SUCCESS
-  ========================== -->
-
-  <div
-    id="success"
-    class="success hidden"
-  >
-
-    <div class="successIcon">
-      🎉
-    </div>
-
-    <h2>
-      Congratulations🎉!
-    </h2>
-
-    <p>
-      Your gift  entry has been successfully submitted.
-    </p>
-
-    <div class="entryBox">
-
-      Entry ID:
-
-      <strong id="entryId"></strong>
-
-    </div>
-
-    <p class="small">
-      Winners will be selected according to the published
-      campaign rules after the campaign period.
-    </p>
-
-  </div>
-
 </div>
 
+<div class="visual">
+  <div class="glow"></div>
 
-<script src="script.js"></script>
+  <div class="coin one">Rs</div>
+  <div class="coin two">★</div>
+
+  <div class="phone">
+    <div class="notch"></div>
+
+    <div class="phone-content">
+      <div class="balance">
+        <small>Reward Balance</small>
+        <strong>2,450 pts</strong>
+      </div>
+
+      <div class="card">
+        🎁 <b>Campaign Reward</b>
+        <br>
+        <small>Eligible reward available</small>
+      </div>
+
+      <div class="card">
+        💰 <b>Cashback</b>
+        <br>
+        <small>Explore current offers</small>
+      </div>
+
+      <div class="card">
+        ⭐ <b>Lucky Draw</b>
+        <br>
+        <small>Participate now</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="gift"></div>
+</div>
+
+</div>
+</section>
+</div>
 
 </body>
-  </html>
+</html>
